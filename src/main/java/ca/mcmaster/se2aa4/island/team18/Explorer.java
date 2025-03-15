@@ -25,10 +25,15 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() {
-        JSONObject decision = new JSONObject();
-        decision.put("action", "stop"); // we stop the exploration immediately
-        logger.info("** Decision: {}",decision.toString());
-        return decision.toString();
+        MapReader echo = new Echo();
+        MapReader scan = new Scan();
+        return scan.takeDecision("W").toString();
+
+        // JSONObject decision = new JSONObject();
+        // decision.put("action", "stop"); // we stop the exploration immediately
+        // logger.info("** Decision: {}",decision.toString());
+        // return decision.toString();
+        
     }
 
     @Override
