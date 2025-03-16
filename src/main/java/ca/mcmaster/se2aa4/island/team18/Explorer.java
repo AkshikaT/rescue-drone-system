@@ -1,16 +1,18 @@
 package ca.mcmaster.se2aa4.island.team18;
 
 import java.io.StringReader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import eu.ace_design.island.bot.IExplorerRaid;
 
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
+    private Drone drone;
 
     @Override
     public void initialize(String s) {
@@ -19,21 +21,19 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Initialization info:\n {}",info.toString(2));
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
+
+        drone = new Drone(Direction.valueOf(direction));
+
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
 
     @Override
     public String takeDecision() {
-        MapReader echo = new Echo();
-        MapReader scan = new Scan();
-        return scan.takeDecision("W").toString();
-
-        // JSONObject decision = new JSONObject();
-        // decision.put("action", "stop"); // we stop the exploration immediately
-        // logger.info("** Decision: {}",decision.toString());
-        // return decision.toString();
-        
+        //Decision decision = drone.turnRight();
+        Decision decision = drone.echoDecision("R");
+        logger.info("** Decision: {}",decision.toString());
+        return decision.toString();
     }
 
     @Override
