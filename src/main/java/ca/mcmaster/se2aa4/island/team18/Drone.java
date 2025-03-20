@@ -4,9 +4,11 @@ import org.json.JSONObject;
 
 public class Drone {
     private Direction direction;
+    private Integer batteryLevel;
 
-    public Drone(Direction direction) {
+    public Drone(Direction direction, Integer batteryLevel) {
         this.direction = direction;
+        this.batteryLevel = batteryLevel;
     }
 
     public Decision turnRight() {
@@ -59,12 +61,27 @@ public class Drone {
         return new Decision(command.toString());
     }
 
-    public Decision echoDecision(String relativeDirection) {
-        Echo echo = new Echo(this);
-        return new Decision(echo.takeDecision(relativeDirection));
+    public Decision stop() {
+        JSONObject command = new JSONObject();
+        command.put("action", "stop");
+
+        return new Decision(command.toString());
     }
 
     public Direction getDirection() {
         return direction;
     }
+
+    public boolean consumeBattery(int power) { //use the true/false markers to tell the drone to return to start if batteryLevel <= 0
+        if (batteryLevel > 0) {
+            batteryLevel -= power;
+        }
+
+        return batteryLevel > 0; //true = there is battery left, false = no battery left
+    }
+
+    public int getBatteryLevel() {
+        return batteryLevel;
+    }
+
 }

@@ -12,10 +12,10 @@ public class Scan extends MapReader {
         super();
     }
 
-    public String takeDecision(String direction) {
+    public Decision takeDecision(String direction) {
         JSONObject decision = new JSONObject();
         decision.put("action", "scan");
         logger.info("** Decision: {}",decision.toString());
-        return decision.toString();
+        return new Decision (decision.toString());
     }
 }

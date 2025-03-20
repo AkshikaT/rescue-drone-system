@@ -6,7 +6,7 @@ public class Decision {
     public Decision(String jsonCommand) {
         this.decision = jsonCommand;
     }
-
+    
     @Override
     public String toString() {
         return decision;
