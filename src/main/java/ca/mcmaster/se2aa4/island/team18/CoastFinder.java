@@ -35,9 +35,9 @@ public class CoastFinder {
                         break;
                     }
                 }
-            }
 
-            return coastKeys;
+                return coastKeys;
+            }
         } catch (Exception e) {
             logger.error("Error processing the file: ", e);
         }
