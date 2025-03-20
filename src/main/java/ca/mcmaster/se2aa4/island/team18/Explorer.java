@@ -13,6 +13,8 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
+    private FindLand findGround;
+
 
     @Override
     public void initialize(String s) {
@@ -22,7 +24,8 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
 
-        drone = new Drone(Direction.valueOf(direction));
+        drone = new Drone(Direction.valueOf(direction), batteryLevel);
+        findGround = new FindLand(drone);
 
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
@@ -30,8 +33,12 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() {
-        //Decision decision = drone.turnRight();
-        Decision decision = drone.echoDecision("R");
+        if (drone.getBatteryLevel() <= 0) {
+            Decision decision = drone.stop();
+            logger.info("** Decision: {}",decision.toString());
+            return decision.toString();
+        }
+        Decision decision = findGround.nextStep();
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
     }
@@ -46,6 +53,9 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
+
+        drone.consumeBattery(cost);
+        findGround.handleResponse(response.toString());
     }
 
     @Override
