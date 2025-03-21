@@ -13,7 +13,7 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
-    private FindLand findGround;
+    private DroneState currentState;
 
 
     @Override
@@ -25,7 +25,7 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(Direction.valueOf(direction), batteryLevel);
-        findGround = new FindLand(drone);
+        currentState = new FindLand(drone);
 
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
@@ -38,7 +38,7 @@ public class Explorer implements IExplorerRaid {
             logger.info("** Decision: {}",decision.toString());
             return decision.toString();
         }
-        Decision decision = findGround.nextStep();
+        Decision decision = currentState.makeDecision();
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
     }
@@ -55,7 +55,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("Additional information received: {}", extraInfo);
 
         drone.consumeBattery(cost);
-        findGround.handleResponse(response.toString());
+        currentState.handleResponse(response.toString());
+        currentState = currentState.getNextState();
     }
 
     @Override

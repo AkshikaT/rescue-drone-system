@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class Scan extends MapReader {
+public class Scan {
 
     private final Logger logger = LogManager.getLogger();
 
@@ -12,7 +12,7 @@ public class Scan extends MapReader {
         super();
     }
 
-    public Decision takeDecision(String direction) {
+    public Decision takeDecision() {
         JSONObject decision = new JSONObject();
         decision.put("action", "scan");
         logger.info("** Decision: {}",decision.toString());
