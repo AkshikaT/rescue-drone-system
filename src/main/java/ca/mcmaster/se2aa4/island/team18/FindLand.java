@@ -14,11 +14,8 @@ public class FindLand implements DroneState{
     private boolean echoDone = false;
 
     private boolean findTop = false;
-    private boolean findBottom = false;
     private boolean turnDone = false;
     protected int [] topGroundCoor = new int [2];
-    protected int [] bottomGroundCoor = new int[2];
-    private boolean noGround = true;
 
     public FindLand(Drone drone) {
         this.drone = drone;
@@ -42,44 +39,22 @@ public class FindLand implements DroneState{
     public void handleResponse(String response) {
         JSONObject responseJson = new JSONObject(response);
         JSONObject extras = responseJson.optJSONObject("extras");
-        int x = 0;
-        int y = 0;
 
         if (extras != null && extras.has("found")) {
             String found = extras.getString("found");
             int range = extras.getInt("range");
             if("GROUND".equals(found)) {
-                noGround = false;
-                y = drone.y;
-                x = range;
-            }
-            else {
-                noGround = true;
+                findTop = true;
+                topGroundCoor[0] = drone.y;
+                topGroundCoor[1] = range;
             }
         }
-
-        if(!findTop && !noGround) {                 // identify the top when ground is found
-            topGroundCoor[0] = x;
-            topGroundCoor[1] = y;
-            findTop = true;
-        }
-
-        else if(findTop && !noGround) {           // keep updating the coordinates until OUT OF RANGE
-            bottomGroundCoor[0] = x;
-            bottomGroundCoor[1] = y;
-        }
-
-        if(findTop && noGround) {
-            findBottom = true;
-        }
-        
     }
 
     @Override
     public DroneState getNextState() {
-        if (findBottom) {
+        if (findTop) {
             logger.info("ground starts: x = {}, y = {} ", topGroundCoor[0], topGroundCoor[1]);
-            logger.info("ground ends: x = {}, y = {} ", bottomGroundCoor[0], bottomGroundCoor[1]);
             return new FlyToLand(drone, echo); 
         }
         return this; 
