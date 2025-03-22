@@ -7,11 +7,11 @@ import org.json.JSONObject;
 public class Drone {
     private final Logger logger = LogManager.getLogger();
 
-    private Direction direction;
+    protected Direction direction;
     private Integer batteryLevel;
 
-    private int x = 0;           // relative coordinates of the drone       
-    private int y = 0;
+    protected int x = 0;           // relative coordinates of the drone       
+    protected int y = 0;
 
     protected int mapHorRange;
     protected int mapVerRange;
@@ -22,7 +22,9 @@ public class Drone {
     }
 
     public Decision turnRight() {
+        updateDroneCoors();
         direction = Direction.valueOf(direction.getRightDirection());
+        updateDroneCoors();
 
         JSONObject command = new JSONObject();
         command.put("action", "heading");
@@ -35,8 +37,9 @@ public class Drone {
     }
 
     public Decision turnLeft() {
+        updateDroneCoors();
         direction = Direction.valueOf(direction.getLeftDirection());
-
+        updateDroneCoors();
         JSONObject command = new JSONObject();
         command.put("action", "heading");
 
