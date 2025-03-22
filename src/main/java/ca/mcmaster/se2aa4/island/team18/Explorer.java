@@ -25,19 +25,14 @@ public class Explorer implements IExplorerRaid {
         Integer batteryLevel = info.getInt("budget");
 
         drone = new Drone(Direction.valueOf(direction), batteryLevel);
-        currentState = new FindLand(drone);
-
+        currentState = new MapDimensions(drone);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
     }
 
     @Override
     public String takeDecision() {
-        if (drone.getBatteryLevel() <= 0) {
-            Decision decision = drone.stop();
-            logger.info("** Decision: {}",decision.toString());
-            return decision.toString();
-        }
+        logger.info("BATTERY LEVEL AT: {}", drone.getBatteryLevel());
         Decision decision = currentState.makeDecision();
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
@@ -45,18 +40,24 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public void acknowledgeResults(String s) {
-        JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
-        logger.info("** Response received:\n"+response.toString(2));
-        Integer cost = response.getInt("cost");
-        logger.info("The cost of the action was {}", cost);
-        String status = response.getString("status");
-        logger.info("The status of the drone is {}", status);
-        JSONObject extraInfo = response.getJSONObject("extras");
-        logger.info("Additional information received: {}", extraInfo);
+        if (drone.getBatteryLevel() <= 0) {
+            Decision decision = drone.stop();
+            logger.info("** Decision: {}",decision.toString());
+        }
+        else {
+            JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
+            logger.info("** Response received:\n"+response.toString(2));
+            Integer cost = response.getInt("cost");
+            logger.info("The cost of the action was {}", cost);
+            String status = response.getString("status");
+            logger.info("The status of the drone is {}", status);
+            JSONObject extraInfo = response.getJSONObject("extras");
+            logger.info("Additional information received: {}", extraInfo);
 
-        drone.consumeBattery(cost);
-        currentState.handleResponse(response.toString());
-        currentState = currentState.getNextState();
+            drone.consumeBattery(cost);
+            currentState.handleResponse(response.toString());
+            currentState = currentState.getNextState();
+        }
     }
 
     @Override

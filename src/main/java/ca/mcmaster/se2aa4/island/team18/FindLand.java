@@ -32,7 +32,7 @@ public class FindLand implements DroneState{
         // Echo F, L, and R
         if (!echoDone) {
             echoIndex = (echoIndex + 1) % echoOptions.length;
-            if (echoIndex == 2) {
+            if (echoIndex == 0) {
                 echoDone = true;
             }
             return echo.takeDecision(echoOptions[echoIndex]);
