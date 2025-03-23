@@ -15,7 +15,6 @@ public class FindLand implements DroneState{
 
     private boolean findTop = false;
     private boolean turnDone = false;
-    protected int [] topGroundCoor = new int [2];
 
     public FindLand(Drone drone) {
         this.drone = drone;
@@ -45,8 +44,8 @@ public class FindLand implements DroneState{
             int range = extras.getInt("range");
             if("GROUND".equals(found)) {
                 findTop = true;
-                topGroundCoor[0] = drone.y;
-                topGroundCoor[1] = range;
+                drone.topGroundCoor[1] = drone.y;
+                drone.topGroundCoor[0] = range + drone.x;
             }
         }
     }
@@ -54,7 +53,7 @@ public class FindLand implements DroneState{
     @Override
     public DroneState getNextState() {
         if (findTop) {
-            logger.info("ground starts: x = {}, y = {} ", topGroundCoor[0], topGroundCoor[1]);
+            logger.info("ground starts: x = {}, y = {} ", drone.topGroundCoor[0], drone.topGroundCoor[1]);
             return new FlyToLand(drone, echo); 
         }
         return this; 

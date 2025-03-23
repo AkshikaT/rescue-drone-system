@@ -15,6 +15,7 @@ public class Drone {
 
     protected int mapHorRange;
     protected int mapVerRange;
+    protected int [] topGroundCoor = new int [2];
 
     public Drone(Direction direction, Integer batteryLevel) {
         this.direction = direction;
@@ -51,8 +52,8 @@ public class Drone {
     }
 
     public Decision uTurn() {
-        turnRight();
-        turnRight();
+        turnLeft();
+        turnLeft();
 
         JSONObject command = new JSONObject();
         command.put("action", "heading");
