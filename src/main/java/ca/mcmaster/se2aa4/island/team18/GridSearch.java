@@ -18,6 +18,9 @@ public class GridSearch implements DroneState {
     private int turnCounter = 0;
     private boolean outOfRange = false;
     private int uTurnCounter = 0;
+    private int rowCount = 0;
+    private int count = 0;
+    private int echoCounter = 0;
    
 
     public GridSearch(Drone drone) {
@@ -35,31 +38,43 @@ public class GridSearch implements DroneState {
                 return drone.turnLeft();
             }
             else if (uTurnCounter == 1) {
+                uTurnCounter++;
+                return drone.flyForward();
+            }
+            else if (uTurnCounter == 2) {
                 outOfRange = false;
+                uTurnCounter++;
+                rowCount++;
+                return drone.turnLeft();
+            }
+            else if (uTurnCounter == 3) {
                 uTurnCounter++;
                 return drone.turnLeft();
             }
-            else if (uTurnCounter == 2) {
-                uTurnCounter++;
-                return drone.turnRight();
-            }
-            else if (uTurnCounter == 3) {
+            else if (uTurnCounter == 4) {
                 outOfRange = false;
                 uTurnCounter = 0;
-                return drone.turnRight();
+                rowCount++;
+                return drone.turnLeft();
             }
         }
 
         if (turnCounter == 0) {
-            // Scan the current tile
             turnCounter++;
             return scan.takeDecision();
         } else if (turnCounter == 1) {
-            // Echo forward to check for boundaries
-            turnCounter++;
-            return echo.takeDecision("F");
-        }   
-        else {
+            if (echoCounter % 1 == 0) {
+                turnCounter++;
+                return echo.takeDecision("F");
+            } else {
+                turnCounter++;
+                return makeDecision();
+            }
+        } else if (turnCounter == 2) {
+            turnCounter = 0;
+            echoCounter++; 
+            return drone.flyForward();
+        } else {
             turnCounter = 0;
             return drone.flyForward();
         }
@@ -75,8 +90,11 @@ public class GridSearch implements DroneState {
             if (extras.has("creeks")) {
                 JSONArray creeksArray = extras.getJSONArray("creeks");
                 for (int i = 0; i < creeksArray.length(); i++) {
-                    creeks.add(creeksArray.getString(i));
+                    String creek = creeksArray.getString(i);
+                if (!creeks.contains(creek)) { // Check for duplicates
+                    creeks.add(creek);
                 }
+        }
                 logger.info("Creeks found: {}", creeks);
             }
 
@@ -93,12 +111,10 @@ public class GridSearch implements DroneState {
             if (extras.has("found")) {
                 String found = extras.getString("found");
                 if ("OUT_OF_RANGE".equals(found)) {
-                    Direction currentDirection = drone.getDirection();
-            
                     int range = extras.optInt("range", -1); // Default to -1 if range is not present
                     logger.info("Out of range detected");
             
-                    if (range <= 10) {
+                    if (range <= 20) {
                         outOfRange = true;
                     } 
                     

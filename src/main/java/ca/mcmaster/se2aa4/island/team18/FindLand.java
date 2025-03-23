@@ -10,7 +10,7 @@ public class FindLand implements DroneState{
     private final Echo echo;
     private boolean echoDone = false;
     private boolean groundFound = false;
-    private boolean faceLand = true;
+    private boolean faceLand = false;
     private boolean findTop = false;
     private final String[] echoOptions = {"F", "L", "R"};
     private int echoIndex = -1;
@@ -26,23 +26,16 @@ public class FindLand implements DroneState{
     public Decision makeDecision() {
 
         if (groundFound && !faceLand) {
-            if (echoIndex == 1) {
-                faceLand = true;
-                return drone.turnLeft();
-            }
-            else if (echoIndex == 2) {
-                faceLand = true;
+            faceLand = true;
                 return drone.turnRight();
-            }
+            
         }
 
         // Echo F, L, and R
         if (!echoDone) {
             echoIndex = (echoIndex + 1) % echoOptions.length;
-            if (echoIndex == 2) {
-                echoDone = true;
-            }
-            return echo.takeDecision(echoOptions[echoIndex]);
+            echoDone = true;
+            return echo.takeDecision("R");
         }
 
         // Fly forward is no ground is found
@@ -64,9 +57,7 @@ public class FindLand implements DroneState{
                 drone.topGroundCoor[1] = range + drone.y;
                 drone.topGroundCoor[0] = drone.x;
 
-                if (echoIndex == 1 || echoIndex == 2) {
-                    faceLand = false;
-                }
+                
             }
         }
     }
