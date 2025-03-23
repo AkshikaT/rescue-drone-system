@@ -8,6 +8,7 @@ public class Drone {
     private final Logger logger = LogManager.getLogger();
 
     protected Direction direction;
+    protected Position position;
     private Integer batteryLevel;
 
     protected int x = 0;           // relative coordinates of the drone       
@@ -23,13 +24,13 @@ public class Drone {
     public Drone(Direction direction, Integer batteryLevel) {
         this.direction = direction;
         this.batteryLevel = batteryLevel;
+        this.position = new Position(this);
     }
 
     public Decision turnRight() {
-        updateDroneCoors();
+        position.updatePosition();
         direction = Direction.valueOf(direction.getRightDirection());
-        updateDroneCoors();
-
+        position.updatePosition();
         JSONObject command = new JSONObject();
         command.put("action", "heading");
 
@@ -37,14 +38,13 @@ public class Drone {
         parameters.put("direction", direction.name());
 
         command.put("parameters", parameters);
-        this.updateDroneCoors();
         return new Decision(command.toString());
     }
 
     public Decision turnLeft() {
-        updateDroneCoors();
+        position.updatePosition();
         direction = Direction.valueOf(direction.getLeftDirection());
-        updateDroneCoors();
+        position.updatePosition();
         JSONObject command = new JSONObject();
         command.put("action", "heading");
 
@@ -52,14 +52,14 @@ public class Drone {
         parameters.put("direction", direction.name());
 
         command.put("parameters", parameters);
-        this.updateDroneCoors();
         return new Decision(command.toString());
     }
 
     public Decision flyForward() {
+        position.updatePosition();
+
         JSONObject command = new JSONObject();
         command.put("action", "fly");
-        this.updateDroneCoors();
         return new Decision(command.toString());
     }
 
@@ -86,29 +86,5 @@ public class Drone {
         return batteryLevel;
     }
 
-    public String getDirectionChar() {
-        return String.valueOf(direction.name().charAt(0));
-    }
-
-    public void updateDroneCoors() {                // only called when drone makes movement
-        switch (getDirectionChar()){
-            case ("N"):
-                this.y += 1;
-                break;
-            case ("S"):
-                this.y -= 1;
-                break;
-            case ("E"):
-                this.x += 1;
-                break;
-            case ("W"):
-                this.x -= 1;
-                break;
-            default:
-                logger.info("coordinates not able to update ");
-                break;
-        }
-        logger.info("New direction: {}    Coordinates of the drone: x = {}, y = {}", getDirectionChar(), x, y);
-    }
 
 }

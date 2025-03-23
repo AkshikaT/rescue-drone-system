@@ -20,8 +20,7 @@ public class GridSearch implements DroneState {
     private int uTurnCounter = 0;
     private int rowCount = 0;
     private int count = 0;
-    private int echoCounter = 0;
-   
+    private int echoCounter = 0;   
 
     public GridSearch(Drone drone) {
         this.drone = drone;
@@ -93,6 +92,8 @@ public class GridSearch implements DroneState {
                     String creek = creeksArray.getString(i);
                 if (!creeks.contains(creek)) { // Check for duplicates
                     creeks.add(creek);
+                    logger.info("Creek position: {}, {}", drone.position.getX(), drone.position.getY());
+
                 }
         }
                 logger.info("Creeks found: {}", creeks);
@@ -114,7 +115,7 @@ public class GridSearch implements DroneState {
                     int range = extras.optInt("range", -1); // Default to -1 if range is not present
                     logger.info("Out of range detected");
             
-                    if (range <= 20) {
+                    if (range <= 10) {
                         outOfRange = true;
                     } 
                     
