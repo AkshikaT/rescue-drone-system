@@ -16,6 +16,9 @@ public class Drone {
     protected int mapHorRange;
     protected int mapVerRange;
     protected int [] topGroundCoor = new int [2];
+    protected int endX;
+    protected int groundX;
+    protected int groundY;
 
     public Drone(Direction direction, Integer batteryLevel) {
         this.direction = direction;
@@ -34,6 +37,7 @@ public class Drone {
         parameters.put("direction", direction.name());
 
         command.put("parameters", parameters);
+        this.updateDroneCoors();
         return new Decision(command.toString());
     }
 
@@ -48,21 +52,7 @@ public class Drone {
         parameters.put("direction", direction.name());
 
         command.put("parameters", parameters);
-        return new Decision(command.toString());
-    }
-
-    public Decision uTurn() {
-        turnLeft();
-        turnLeft();
-
-        JSONObject command = new JSONObject();
-        command.put("action", "heading");
-
-        JSONObject parameters = new JSONObject();
-        parameters.put("direction", direction.name());
-
-        command.put("parameters", parameters);
-
+        this.updateDroneCoors();
         return new Decision(command.toString());
     }
 

@@ -1,20 +1,22 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FindLand implements DroneState{
-
-    private final Logger logger = LogManager.getLogger();
-
     private final Drone drone;
     private final Echo echo;
     private boolean echoDone = false;
-
+    private boolean groundFound = false;
+    private boolean faceLand = true;
     private boolean findTop = false;
-    private boolean turnDone = false;
+    private final String[] echoOptions = {"F", "L", "R"};
+    private int echoIndex = -1;
+    protected boolean patrol = false;
+
+    private final Logger logger = LogManager.getLogger();
 
     public FindLand(Drone drone) {
         this.drone = drone;
@@ -22,15 +24,28 @@ public class FindLand implements DroneState{
     }
 
     public Decision makeDecision() {
-        if (!turnDone) {                    // only turn once at the beginning
-            turnDone = true;
-            return drone.turnRight();
+
+        if (groundFound && !faceLand) {
+            if (echoIndex == 1) {
+                faceLand = true;
+                return drone.turnLeft();
+            }
+            else if (echoIndex == 2) {
+                faceLand = true;
+                return drone.turnRight();
+            }
         }
 
-        else if (turnDone && !echoDone) {
-            echoDone = true;
-            return echo.takeDecision("L");
-        } 
+        // Echo F, L, and R
+        if (!echoDone) {
+            echoIndex = (echoIndex + 1) % echoOptions.length;
+            if (echoIndex == 2) {
+                echoDone = true;
+            }
+            return echo.takeDecision(echoOptions[echoIndex]);
+        }
+
+        // Fly forward is no ground is found
         echoDone = false;
         return drone.flyForward();
     }
@@ -38,14 +53,20 @@ public class FindLand implements DroneState{
     public void handleResponse(String response) {
         JSONObject responseJson = new JSONObject(response);
         JSONObject extras = responseJson.optJSONObject("extras");
-
+        
         if (extras != null && extras.has("found")) {
             String found = extras.getString("found");
-            int range = extras.getInt("range");
-            if("GROUND".equals(found)) {
+
+            if ("GROUND".equals(found)) {
+                int range = extras.getInt("range");
+                groundFound = true;
                 findTop = true;
-                drone.topGroundCoor[1] = drone.y;
-                drone.topGroundCoor[0] = range + drone.x;
+                drone.topGroundCoor[1] = range + drone.y;
+                drone.topGroundCoor[0] = drone.x;
+
+                if (echoIndex == 1 || echoIndex == 2) {
+                    faceLand = false;
+                }
             }
         }
     }
@@ -54,6 +75,9 @@ public class FindLand implements DroneState{
     public DroneState getNextState() {
         if (findTop) {
             logger.info("ground starts: x = {}, y = {} ", drone.topGroundCoor[0], drone.topGroundCoor[1]);
+        }
+        if (groundFound && faceLand) {
+            logger.info("Now flying to land");
             return new FlyToLand(drone, echo); 
         }
         return this; 
