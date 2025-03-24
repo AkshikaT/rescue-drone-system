@@ -35,6 +35,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("BATTERY LEVEL AT: {}", drone.getBatteryLevel());
         Decision decision = currentState.makeDecision();
         logger.info("** Decision: {}",decision.toString());
+        logger.info("current position: {}, {}", drone.position.getX(), drone.position.getY());
         return decision.toString();
     }
 

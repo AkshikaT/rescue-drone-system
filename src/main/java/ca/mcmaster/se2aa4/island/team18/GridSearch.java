@@ -97,6 +97,8 @@ public class GridSearch implements DroneState {
                     String creek = creeksArray.getString(i);
                 if (!creeks.contains(creek)) { // Check for duplicates
                     creeks.add(creek);
+                    logger.info("Creek position: {}, {}", drone.position.getX(), drone.position.getY());
+
                 }
         }
                 logger.info("Creeks found: {}", creeks);
