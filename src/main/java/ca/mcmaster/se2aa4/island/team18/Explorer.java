@@ -1,6 +1,7 @@
 package ca.mcmaster.se2aa4.island.team18;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,8 @@ public class Explorer implements IExplorerRaid {
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
     private DroneState currentState;
+    private Creeks creek;
+    private Sites site;
 
 
     @Override
@@ -63,7 +66,19 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        Path shortestPath = new Path();
+        ArrayList<String> creekList = creek.getCreeks();
+        String emergencySite = site.getSite();
+
+        String closestCreek = shortestPath.findShortestPath(creekList, creek.getXCoords(), creek.getYCoords(), site.getXCoord(), site.getYCoord());
+
+        logger.info("Creeks located: " + creekList);
+        logger.info("Emergency site located: " + emergencySite);
+        logger.info("Site position: " + site.getXCoord() + ", " + site.getYCoord());
+        logger.info("Closest creek to site: " + closestCreek);
+        logger.info("Closest creek is located at: " + creek.creekXCoord(closestCreek) + ", " + creek.creekYCoord(closestCreek));
+
+        return closestCreek;
     }
 
 }

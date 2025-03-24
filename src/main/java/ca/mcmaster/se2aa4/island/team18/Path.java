@@ -1,10 +1,10 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Path {
 
-    public String findShortestPath(List<String> creeks, List<Integer> creekX, List<Integer> creekY, int siteX, int siteY) {
+    public String findShortestPath(ArrayList<String> creeks, ArrayList<Integer> creekX, ArrayList<Integer> creekY, int siteX, int siteY) {
         double minDistance = 1000000;
         String closest = "";
 
