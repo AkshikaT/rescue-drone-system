@@ -12,6 +12,7 @@ public class Path {
             int x = creekX.get(i);
             int y = creekY.get(i);
             double distance = Math.sqrt(Math.pow((siteX-x), 2) + Math.pow((siteY-y), 2));
+            System.out.println("Distance to creek " + creeks.get(i) + ": " + distance); // Logging each distance
             if (distance < minDistance) {
                 minDistance = distance;
                 closest = creeks.get(i);

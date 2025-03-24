@@ -16,19 +16,20 @@ public class GridSearch implements DroneState {
     private int turnCounter = 0;
     private boolean outOfRange = false;
     private int uTurnCounter = 0;
-    private int rowCount = 0;
-    private int count = 0;
     private int echoCounter = 0;
     private int range;
-    private Creeks creek = new Creeks();
-    private Sites site = new Sites();
-    private ArrayList<String> creekId = creek.getCreeks();
+    private Creeks creek;
+    private Sites site;
+    private ArrayList<String> creekId;
    
 
-    public GridSearch(Drone drone) {
+    public GridSearch(Drone drone, Creeks creek, Sites site) {
         this.drone = drone;
         this.scan = new Scan();
         this.echo = new Echo(drone);
+        this.creek = creek;
+        this.site = site;
+        this.creekId = creek.getCreeks();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class GridSearch implements DroneState {
             else if (uTurnCounter == 5) {
                 outOfRange = false;
                 uTurnCounter = 0;
-                rowCount++;
+
                 return drone.turnLeft();
             }
         }

@@ -7,6 +7,12 @@ public class Creeks {
     private ArrayList<Integer> creekX;
     private ArrayList<Integer> creekY;
 
+    public Creeks() {
+        this.creekIds = new ArrayList<>();
+        this.creekX = new ArrayList<>();
+        this.creekY = new ArrayList<>();
+    }
+
     public void addCreek(String creek) {
         creekIds.add(creek);
     }
@@ -29,25 +35,21 @@ public class Creeks {
     }
 
     public int creekXCoord(String id) {
-        int xCoord = 0;
         for (int i = 0; i < creekIds.size(); i++) {
-            String x = creekIds.get(i);
-            if (x == id) {
-                xCoord = creekX.get(i);
+            if (creekIds.get(i).equals(id)) {
+                return creekX.get(i);
             }
         }
-        return xCoord;
+        return -1; // Return a default or invalid value if not found
     }
 
     public int creekYCoord(String id) {
-        int yCoord = 0;
         for (int i = 0; i < creekIds.size(); i++) {
-            String y = creekIds.get(i);
-            if (y == id) {
-                yCoord =  creekY.get(i);
+            if (creekIds.get(i) != null && creekIds.get(i).equals(id)) {
+                return creekY.get(i);
             }
         }
-        return yCoord;
+        return -1; // Same here — return a value indicating "not found"
     }
 
 

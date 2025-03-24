@@ -2,6 +2,8 @@ package ca.mcmaster.se2aa4.island.team18;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,12 +17,18 @@ public class FindLand implements DroneState{
     private final String[] echoOptions = {"F", "L", "R"};
     private int echoIndex = -1;
     protected boolean patrol = false;
+    private Creeks creek;
+    private Sites site;
+    private ArrayList<String> creekId;
 
     private final Logger logger = LogManager.getLogger();
 
-    public FindLand(Drone drone) {
+    public FindLand(Drone drone, Creeks creek, Sites site) {
         this.drone = drone;
         this.echo = new Echo(drone);
+        this.creek = creek;
+        this.site = site;
+        this.creekId = creek.getCreeks();
     }
 
     public Decision makeDecision() {
@@ -69,7 +77,7 @@ public class FindLand implements DroneState{
         }
         if (groundFound && faceLand) {
             logger.info("Now flying to land");
-            return new FlyToLand(drone, echo); 
+            return new FlyToLand(drone, echo, creek, site); 
         }
         return this; 
     }

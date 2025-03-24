@@ -1,5 +1,7 @@
 package ca.mcmaster.se2aa4.island.team18;
 
+import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -14,11 +16,17 @@ public class MapDimensions implements DroneState{
     private boolean mappingComplete = false;
     private final String[] echoOptions = {"F", "R"};
     private int echoIndex = -1;
+    private Creeks creek;
+    private Sites site;
+    private ArrayList<String> creekId;
     
 
-    public MapDimensions(Drone drone) {
+    public MapDimensions(Drone drone, Creeks creek, Sites site) {
         this.drone = drone;
         this.echo = new Echo(drone);
+        this.creek = creek;
+        this.site = site;
+        this.creekId = creek.getCreeks();
     }
 
     @Override
@@ -50,7 +58,7 @@ public class MapDimensions implements DroneState{
         logger.info("evaluating next state");
         if (mappingComplete) {
             logger.info("dimensions of the map are: {} x {}", drone.mapHorRange, drone.mapVerRange);
-            return new FindLand(drone); 
+            return new FindLand(drone, creek, site); 
         }
         return this; 
     }
