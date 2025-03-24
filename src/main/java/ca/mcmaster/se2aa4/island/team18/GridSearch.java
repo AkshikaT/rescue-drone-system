@@ -21,6 +21,7 @@ public class GridSearch implements DroneState {
     private int rowCount = 0;
     private int count = 0;
     private int echoCounter = 0;
+    private int range;
    
 
     public GridSearch(Drone drone) {
@@ -42,16 +43,19 @@ public class GridSearch implements DroneState {
                 return drone.flyForward();
             }
             else if (uTurnCounter == 2) {
-                outOfRange = false;
                 uTurnCounter++;
-                rowCount++;
-                return drone.turnLeft();
+                return echo.takeDecision("F");
             }
             else if (uTurnCounter == 3) {
+                outOfRange = false;
                 uTurnCounter++;
                 return drone.turnLeft();
             }
             else if (uTurnCounter == 4) {
+                uTurnCounter++;
+                return drone.turnLeft();
+            }
+            else if (uTurnCounter == 5) {
                 outOfRange = false;
                 uTurnCounter = 0;
                 rowCount++;
@@ -63,7 +67,7 @@ public class GridSearch implements DroneState {
             turnCounter++;
             return scan.takeDecision();
         } else if (turnCounter == 1) {
-            if (echoCounter % 1 == 0) {
+            if (echoCounter % 2 == 0) {
                 turnCounter++;
                 return echo.takeDecision("F");
             } else {
@@ -111,12 +115,11 @@ public class GridSearch implements DroneState {
             if (extras.has("found")) {
                 String found = extras.getString("found");
                 if ("OUT_OF_RANGE".equals(found)) {
-                    int range = extras.optInt("range", -1); // Default to -1 if range is not present
+                    range = extras.optInt("range"); // Default to -1 if range is not present
                     logger.info("Out of range detected");
-            
-                    if (range <= 20) {
-                        outOfRange = true;
-                    } 
+                        if (range <= 12)
+                            outOfRange = true;
+                    
                     
                 }
             }
@@ -129,6 +132,9 @@ public class GridSearch implements DroneState {
         if (creeks.size() == 10 && !site.isEmpty()) {
             logger.info("All targets found. Transitioning to Stop state.");
             return new Stop(drone); 
+        }
+        if (outOfRange && range <= 0) {
+            return new Stop(drone);
         }
         return this; 
     }
