@@ -1,11 +1,8 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import static eu.ace_design.island.runner.Runner.run;
-
 import java.io.File;
-import java.util.Map;
 
-import eu.ace_design.island.arena.utils.OK;
+import static eu.ace_design.island.runner.Runner.run;
 
 public class Runner {
 
@@ -17,7 +14,7 @@ public class Runner {
                     .exploring(new File(filename))
                     .withSeed(42L)
                     .startingAt(1, 1, "EAST")
-                    .backBefore(7000)
+                    .backBefore(40000)
                     .withCrew(5)
                     .collecting(1000, "WOOD")
                     .storingInto("./outputs")
