@@ -1,7 +1,5 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import org.json.JSONObject;
-
 public class Position {
     private int x = 0;
     private int y = 0;
@@ -16,7 +14,7 @@ public class Position {
     public int getY() {
         return y;
     }
-    public void updatePosition() {
+    public void update() {
         if (drone.direction.toString().equals("N")) {
             y -= 1;
         }

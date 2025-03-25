@@ -5,16 +5,14 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 public class Stop implements DroneState{
-    private Drone drone;
     private final Logger logger = LogManager.getLogger();
-
-    public Stop(Drone drone) {
-        this.drone = drone;
-    }
 
     @Override
     public Decision makeDecision() {
-        return drone.stop();
+        JSONObject command = new JSONObject();
+        command.put("action", "stop");
+
+        return new Decision(command.toString());
     }
 
     @Override
@@ -24,8 +22,8 @@ public class Stop implements DroneState{
     }
 
     @Override
-    public DroneState getNextState() {
-        return this;
+    public boolean stateCompleted() {
+        return true;
     }
 
 

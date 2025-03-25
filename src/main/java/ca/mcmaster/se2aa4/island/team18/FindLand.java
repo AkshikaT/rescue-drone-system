@@ -1,34 +1,22 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 
 public class FindLand implements DroneState{
     private final Drone drone;
-    private final Echo echo;
     private boolean echoDone = false;
     private boolean groundFound = false;
     private boolean faceLand = false;
     private boolean findTop = false;
-    private final String[] echoOptions = {"F", "L", "R"};
     private int echoIndex = -1;
     protected boolean patrol = false;
-    private Creeks creek;
-    private Sites site;
-    private ArrayList<String> creekId;
 
     private final Logger logger = LogManager.getLogger();
 
-    public FindLand(Drone drone, Creeks creek, Sites site) {
+    public FindLand(Drone drone) {
         this.drone = drone;
-        this.echo = new Echo(drone);
-        this.creek = creek;
-        this.site = site;
-        this.creekId = creek.getCreeks();
     }
 
     public Decision makeDecision() {
@@ -39,11 +27,9 @@ public class FindLand implements DroneState{
             
         }
 
-        // Echo F, L, and R
         if (!echoDone) {
-            echoIndex = (echoIndex + 1) % echoOptions.length;
             echoDone = true;
-            return echo.takeDecision("R");
+            return drone.echo("R");
         }
 
         // Fly forward is no ground is found
@@ -70,16 +56,15 @@ public class FindLand implements DroneState{
         }
     }
 
-    @Override
-    public DroneState getNextState() {
+    public boolean stateCompleted() {
         if (findTop) {
             logger.info("ground starts: x = {}, y = {} ", drone.topGroundCoor[0], drone.topGroundCoor[1]);
         }
         if (groundFound && faceLand) {
             logger.info("Now flying to land");
-            return new FlyToLand(drone, echo, creek, site); 
+            return true;
         }
-        return this; 
+        else return false;
     }
 
 
