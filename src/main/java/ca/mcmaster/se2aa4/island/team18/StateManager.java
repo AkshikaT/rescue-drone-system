@@ -3,6 +3,9 @@ package ca.mcmaster.se2aa4.island.team18;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the state transitions of the drone as it executes its mission.
+ */
 public class StateManager {
     private final Drone drone;
     private final Battery battery;
@@ -31,6 +34,11 @@ public class StateManager {
         stateSequence.add(new Stop());
     }
 
+    /**
+     * Determines the next decision for the drone based on its current state.
+     * 
+     * @return A Decision object representing the action to take.
+     */
     public Decision makeDecision() {
         if (battery.getRemainingPower() <= 0) {
             return new Stop().makeDecision();
@@ -42,8 +50,12 @@ public class StateManager {
         return decision;
     }
 
+    /**
+     * Processes the response from the environment and updates the state if needed.
+     * 
+     * @param response The response received after executing a decision.
+     */
     public void processResponse(String response) {
-        // Let current state handle the response
         stateSequence.get(currentStateIndex).handleResponse(response);
         
         // Check if current state is complete

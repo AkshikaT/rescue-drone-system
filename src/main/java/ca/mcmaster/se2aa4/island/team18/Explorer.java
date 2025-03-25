@@ -16,8 +16,8 @@ public class Explorer implements IExplorerRaid {
     private Drone drone;
     private Battery battery;
     private StateManager commandCenter;
-    private Creeks creek = new Creeks();
-    private Sites site = new Sites();
+    private final Creeks creek = new Creeks();
+    private final Sites site = new Sites();
 
     @Override
     public void initialize(String s) {
@@ -30,7 +30,6 @@ public class Explorer implements IExplorerRaid {
         drone = new Drone(Direction.valueOf(direction));
         battery = new Battery(batteryLevel);
         this.commandCenter = new StateManager(drone, battery, creek, site);
-        // currentState = new MapDimensions(drone);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 

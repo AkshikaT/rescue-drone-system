@@ -3,7 +3,7 @@ package ca.mcmaster.se2aa4.island.team18;
 public class Position {
     private int x = 0;
     private int y = 0;
-    private Drone drone;
+    private final Drone drone;
     public Position (Drone drone) {
         this.drone = drone;
     }

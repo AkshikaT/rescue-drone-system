@@ -10,7 +10,6 @@ public class FindLand implements DroneState{
     private boolean groundFound = false;
     private boolean faceLand = false;
     private boolean findTop = false;
-    private int echoIndex = -1;
     protected boolean patrol = false;
 
     private final Logger logger = LogManager.getLogger();
@@ -19,14 +18,17 @@ public class FindLand implements DroneState{
         this.drone = drone;
     }
 
+    @Override
     public Decision makeDecision() {
 
+        // If ground has been found but the drone has not yet faced it, turn right
         if (groundFound && !faceLand) {
             faceLand = true;
                 return drone.turnRight();
             
         }
 
+        // If echo has not been performed yet, perform an echo scan to detect land
         if (!echoDone) {
             echoDone = true;
             return drone.echo("R");
@@ -37,6 +39,7 @@ public class FindLand implements DroneState{
         return drone.flyForward();
     }
 
+    @Override
     public void handleResponse(String response) {
         JSONObject responseJson = new JSONObject(response);
         JSONObject extras = responseJson.optJSONObject("extras");
@@ -44,18 +47,18 @@ public class FindLand implements DroneState{
         if (extras != null && extras.has("found")) {
             String found = extras.getString("found");
 
+            // If the drone detects ground, record its position
             if ("GROUND".equals(found)) {
                 int range = extras.getInt("range");
                 groundFound = true;
                 findTop = true;
                 drone.topGroundCoor[1] = range + drone.y;
-                drone.topGroundCoor[0] = drone.x;
-
-                
+                drone.topGroundCoor[0] = drone.x;      
             }
         }
     }
 
+    @Override
     public boolean stateCompleted() {
         if (findTop) {
             logger.info("ground starts: x = {}, y = {} ", drone.topGroundCoor[0], drone.topGroundCoor[1]);

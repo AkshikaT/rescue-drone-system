@@ -13,12 +13,12 @@ public class TurnLeft implements DroneCommand{
         this.direction = direction;
 
     }
-    
+
     @Override
     public Decision execute() {
         position.update();
         Direction newDirection = Direction.valueOf(direction.getLeftDirection());
-        drone.setDirection(newDirection); // THIS IS THE CRUCIAL CHANGE
+        drone.setDirection(newDirection); 
         position.update();
         
         JSONObject command = new JSONObject();

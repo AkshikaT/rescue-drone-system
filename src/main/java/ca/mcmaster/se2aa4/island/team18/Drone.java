@@ -1,20 +1,15 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Drone {
-    private final Logger logger = LogManager.getLogger();
-
     protected Direction direction;
     protected Position position;
     private TurnLeft turnLeft;
     private TurnRight turnRight;
     private Fly fly;
     private Echo echo;
-    private Scan scan;
+    private final Scan scan;
 
-    protected int x = 0;           // relative coordinates of the drone       
+    protected int x = 0;              
     protected int y = 0;
 
     protected int mapHorRange;

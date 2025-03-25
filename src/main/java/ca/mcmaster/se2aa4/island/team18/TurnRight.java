@@ -17,7 +17,7 @@ public class TurnRight implements DroneCommand{
     public Decision execute() {
         position.update();
         Direction newDirection = Direction.valueOf(direction.getRightDirection());
-        drone.setDirection(newDirection); // THIS IS THE CRUCIAL CHANGE
+        drone.setDirection(newDirection);
         position.update();
         
         JSONObject command = new JSONObject();

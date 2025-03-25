@@ -7,6 +7,10 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Represents the state in which the drone performs a systematic
+ * search of the map to locate creeks and emergency sites.
+ */
 public class GridSearch implements DroneState {
     private final Logger logger = LogManager.getLogger();
 
@@ -35,6 +39,7 @@ public class GridSearch implements DroneState {
     @Override
     public Decision makeDecision() {
 
+        // Handle U-turn when out of range
         if (outOfRange) {
             if (uTurnCounter == 0) {
                 uTurnCounter++;
@@ -64,6 +69,7 @@ public class GridSearch implements DroneState {
             }
         }
 
+        // Normal search sequence
         if (turnCounter == 0) {
             turnCounter++;
             return drone.scan();
@@ -85,6 +91,13 @@ public class GridSearch implements DroneState {
         }
     }
 
+
+     /**
+     * Processes the response from the drone and extracts relevant information
+     * such as discovered creeks, emergency sites, and echo results.
+     *
+     * @param response The JSON response from the drone.
+     */
     @Override
     public void handleResponse(String response) {
         JSONObject responseJson = new JSONObject(response);
@@ -109,6 +122,7 @@ public class GridSearch implements DroneState {
         }
         else return false;
     }
+    
 
     private void processCreeks(JSONObject extras) {
         if (extras.has("creeks")) {

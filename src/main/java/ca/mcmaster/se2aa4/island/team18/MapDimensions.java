@@ -4,6 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+/**
+ * Determines the horizontal and vertical dimensions of the map using echo commands.
+ */
 public class MapDimensions implements DroneState{
 
     private final Logger logger = LogManager.getLogger();
@@ -18,9 +21,16 @@ public class MapDimensions implements DroneState{
         this.drone = drone;
     }
 
+    /**
+     * Sends an echo command to measure the map's dimensions.
+     * Alternates between checking forward ("F") and right ("R") directions.
+     *
+     * @return A Decision object representing the echo command.
+     */
     @Override
     public Decision makeDecision() {
         count ++;
+        // Mapping is complete after two measurements (horizontal and vertical)
         if(count == 2) {
             mappingComplete = true;
         }
@@ -28,6 +38,12 @@ public class MapDimensions implements DroneState{
         return drone.echo(echoOptions[echoIndex]);
         
     }
+
+    /**
+     * Processes the response from an echo command and updates the drone's map dimensions.
+     *
+     * @param response The JSON response from the echo command.
+     */
     @Override
     public void handleResponse(String response) {
         JSONObject responseJson = new JSONObject(response);
