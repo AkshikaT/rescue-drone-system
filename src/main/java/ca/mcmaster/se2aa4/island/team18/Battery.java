@@ -1,22 +1,25 @@
 package ca.mcmaster.se2aa4.island.team18;
 
 public class Battery {
-    private Integer batteryLevel;
+    private Integer powerLevel;
 
-    public Battery (Integer batteryLevel) {
-        this.batteryLevel = batteryLevel;
+    public Battery (Integer initialPower) {
+        this.powerLevel = initialPower;
     }
 
-    public boolean consume(int power) { //use the true/false markers to tell the drone to return to start if batteryLevel <= 0
-        if (batteryLevel > 0) {
-            batteryLevel -= power;
+    public void consume(int amount) { 
+        powerLevel -= amount;
+        if (powerLevel < 0) {
+            powerLevel = 0;
         }
-
-        return batteryLevel > 0; //true = there is bettery left, false = no battery left
     }
 
-    public int getBatteryLevel() {
-        return batteryLevel;
+    public boolean hasPower() {
+        return powerLevel > 0;
+    }
+    
+    public int getRemainingPower() {
+        return powerLevel;
     }
 
 
