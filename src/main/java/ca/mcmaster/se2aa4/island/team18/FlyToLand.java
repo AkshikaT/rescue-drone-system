@@ -1,6 +1,5 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import java.util.ArrayList;
 
 import org.json.JSONObject;
 
@@ -11,23 +10,16 @@ public class FlyToLand implements DroneState{
     private boolean onLand = false;
     private boolean echoDone = false;
     protected boolean patrol;
-    private Creeks creek;
-    private Sites site;
-    private ArrayList<String> creekId;
 
-    public FlyToLand(Drone drone, Echo echo, Creeks creek, Sites site) {
+    public FlyToLand(Drone drone) {
         this.drone = drone;
-        this.echo = echo;
-        this.creek = creek;
-        this.site = site;
-        this.creekId = creek.getCreeks();
     }
 
     @Override
     public Decision makeDecision() {
         if (!echoDone) {
             echoDone = true;
-            return echo.takeDecision("F");
+            return drone.echo("F");
         }
 
         echoDone = false;
@@ -47,16 +39,9 @@ public class FlyToLand implements DroneState{
         }
     }
 
+
     @Override
-    public DroneState getNextState() {
-        if (onLand) {
-            return new GridSearch(drone, creek, site);
-        }
-
-        // if (onLand && !patrol) {
-        //     return new PatrolLand(drone, echo);
-        // }
-
-        return this; 
+    public boolean stateCompleted() {
+        return onLand;
     }
 }

@@ -4,15 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class Scan {
+public class Scan implements DroneCommand{
 
     private final Logger logger = LogManager.getLogger();
 
-    public Scan() {
-        super();
-    }
-
-    public Decision takeDecision() {
+    @Override
+    public Decision execute() {
         JSONObject decision = new JSONObject();
         decision.put("action", "scan");
         logger.info("** Decision: {}",decision.toString());

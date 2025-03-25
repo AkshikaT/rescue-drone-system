@@ -14,7 +14,8 @@ public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
     private Drone drone;
-    private DroneState currentState;
+    private Battery battery;
+    private StateManager commandCenter;
     private Creeks creek = new Creeks();
     private Sites site = new Sites();
 
@@ -26,8 +27,10 @@ public class Explorer implements IExplorerRaid {
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
 
-        drone = new Drone(Direction.valueOf(direction), batteryLevel);
-        currentState = new MapDimensions(drone, creek, site);
+        drone = new Drone(Direction.valueOf(direction));
+        battery = new Battery(batteryLevel);
+        this.commandCenter = new StateManager(drone, battery, creek, site);
+        // currentState = new MapDimensions(drone);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
@@ -35,14 +38,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() {
-        if (drone.getBatteryLevel() <= 0) {
-            Decision decision = drone.stop();
-            logger.info("** Decision: {}", decision.toString());
-            return decision.toString(); 
-        }
-
-        logger.info("BATTERY LEVEL AT: {}", drone.getBatteryLevel());
-        Decision decision = currentState.makeDecision();
+        logger.info("BATTERY LEVEL AT: {}", battery.getRemainingPower());
+        Decision decision = commandCenter.makeDecision();
         logger.info("** Decision: {}",decision.toString());
         logger.info("current position: {}, {}", drone.position.getX(), drone.position.getY());
         return decision.toString();
@@ -59,9 +56,8 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
 
-        drone.consumeBattery(cost);
-        currentState.handleResponse(response.toString());
-        currentState = currentState.getNextState();
+        battery.consume(cost);
+        commandCenter.processResponse(response.toString());
     }
 
     @Override

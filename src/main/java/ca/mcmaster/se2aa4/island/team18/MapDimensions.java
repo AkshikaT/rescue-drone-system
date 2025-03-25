@@ -1,7 +1,5 @@
 package ca.mcmaster.se2aa4.island.team18;
 
-import java.util.ArrayList;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -11,22 +9,13 @@ public class MapDimensions implements DroneState{
     private final Logger logger = LogManager.getLogger();
 
     private final Drone drone;
-    private final Echo echo;
     private int count = 0;    
     private boolean mappingComplete = false;
     private final String[] echoOptions = {"F", "R"};
     private int echoIndex = -1;
-    private Creeks creek;
-    private Sites site;
-    private ArrayList<String> creekId;
     
-
-    public MapDimensions(Drone drone, Creeks creek, Sites site) {
+    public MapDimensions(Drone drone) {
         this.drone = drone;
-        this.echo = new Echo(drone);
-        this.creek = creek;
-        this.site = site;
-        this.creekId = creek.getCreeks();
     }
 
     @Override
@@ -36,7 +25,7 @@ public class MapDimensions implements DroneState{
             mappingComplete = true;
         }
         echoIndex = (echoIndex + 1) % echoOptions.length;
-        return echo.takeDecision(echoOptions[echoIndex]);
+        return drone.echo(echoOptions[echoIndex]);
         
     }
     @Override
@@ -54,12 +43,11 @@ public class MapDimensions implements DroneState{
     }
 
     @Override
-    public DroneState getNextState() {
-        logger.info("evaluating next state");
+    public boolean stateCompleted() {
         if (mappingComplete) {
             logger.info("dimensions of the map are: {} x {}", drone.mapHorRange, drone.mapVerRange);
-            return new FindLand(drone, creek, site); 
+            return true; 
         }
-        return this; 
+        else return false;
     }
 }

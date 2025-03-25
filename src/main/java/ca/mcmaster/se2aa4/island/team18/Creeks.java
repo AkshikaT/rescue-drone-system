@@ -3,9 +3,9 @@ package ca.mcmaster.se2aa4.island.team18;
 import java.util.ArrayList;
 
 public class Creeks {
-    private ArrayList<String> creekIds;
-    private ArrayList<Integer> creekX;
-    private ArrayList<Integer> creekY;
+    private final ArrayList<String> creekIds;
+    private final ArrayList<Integer> creekX;
+    private final ArrayList<Integer> creekY;
 
     public Creeks() {
         this.creekIds = new ArrayList<>();
@@ -40,7 +40,7 @@ public class Creeks {
                 return creekX.get(i);
             }
         }
-        return -1; // Return a default or invalid value if not found
+        return -1;
     }
 
     public int creekYCoord(String id) {
@@ -49,9 +49,6 @@ public class Creeks {
                 return creekY.get(i);
             }
         }
-        return -1; // Same here — return a value indicating "not found"
+        return -1; 
     }
-
-
-
 }
