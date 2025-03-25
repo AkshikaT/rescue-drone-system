@@ -9,6 +9,9 @@ public class Battery {
 
     public void consume(int amount) { 
         powerLevel -= amount;
+        if (powerLevel < 0) {
+            powerLevel = 0;
+        }
     }
 
     public boolean hasPower() {
