@@ -1,26 +1,39 @@
 package ca.mcmaster.se2aa4.island.team18;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class TurnRightTest {
+
     @Test
-    void testExecute() {
-        Direction direction = Direction.N;
-        Drone drone = new Drone(direction, 100);
+    void testUpdatesDirection() {
+        Drone drone = new Drone(Direction.N);
         Position position = new Position(drone);
+        TurnRight turnRightCommand = new TurnRight(drone, position, drone.getDirection());
 
-        TurnRight turnRight = new TurnRight(drone, position, direction);
-        Decision decision = turnRight.execute();
+        Direction initialDirection = drone.getDirection();
 
+        Decision decision = turnRightCommand.execute();
+
+        assertNotEquals(initialDirection, drone.getDirection());
         assertEquals(Direction.E, drone.getDirection());
+    }
 
-        JSONObject expected = new JSONObject();
-        expected.put("action", "heading");
-        expected.put("parameters", new JSONObject().put("direction", "E"));
+    @Test
+    void testReturnsCorrectDecision() {
+        Drone drone = new Drone(Direction.N);
+        Position position = new Position(drone);
+        TurnRight turnRightCommand = new TurnRight(drone, position, drone.getDirection());
 
-        assertEquals(expected.toString(), decision.getCommand());
+        Decision decision = turnRightCommand.execute();
+
+        JSONObject expectedCommand = new JSONObject();
+        expectedCommand.put("action", "heading");
+        expectedCommand.put("parameters", new JSONObject().put("direction", "E"));
+
+        assertEquals(expectedCommand.toString(), decision.toString());
     }
 }
+

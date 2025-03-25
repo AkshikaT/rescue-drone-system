@@ -6,28 +6,32 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 class FlyTest {
-    
+
     @Test
-    void testExecuteUpdatesPosition() {
-        Position position = new Position(); // Assuming a default constructor exists
+    void testUpdatesPosition() {
+        Drone drone = new Drone(Direction.N);
+        Position position = new Position(drone);
         Fly flyCommand = new Fly(position);
-        
+
+        int initialX = position.getX();
+        int initialY = position.getY();
+
         flyCommand.execute();
-        
-        // Assuming Position has a method to check if it was updated
-        assertTrue(position.wasUpdated()); // Replace with actual verification method
+
+        assertEquals(initialX, position.getX());
+        assertEquals(initialY - 1, position.getY());
     }
-    
+
     @Test
     void testExecuteReturnsCorrectDecision() {
-        Position position = new Position();
+        Position position = new Position(new Drone(Direction.N));
         Fly flyCommand = new Fly(position);
-        
+
         Decision decision = flyCommand.execute();
-        
+
         JSONObject expectedCommand = new JSONObject();
         expectedCommand.put("action", "fly");
-        
-        assertEquals(expectedCommand.toString(), decision.getCommand());
+
+        assertEquals(expectedCommand.toString(), decision.toString());
     }
 }
